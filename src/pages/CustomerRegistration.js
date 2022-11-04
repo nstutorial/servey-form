@@ -103,10 +103,12 @@ const handleDelete =(id,user)=>{
 const{staffname,fathername,address,mobilenumber,adhar,email,doj,username,password} = user;
 
 const handleEdit =(id)=>{
-
-  const filterData = userdata.filter((u)=>u._id ===id)
+  setUpdateFlag(true);
+  const filterData = userdata.filter((u)=>u._id ===id);
   //console.log(filterData);
+ 
   setUser({
+  id:filterData[0]._id,
   staffname:filterData[0].staffname,
   fathername:filterData[0].fathername,
   address:filterData[0].address,
@@ -118,17 +120,34 @@ const handleEdit =(id)=>{
   password:filterData[0].password,
   
   });
-  //console.log(user);
-
+  console.log(user);
+ 
  }
 //end edit
-const [toggle, setToggle] = useState(false);
+const [updateFlag,setUpdateFlag] = useState(false);
 
-    const toggleFunc = () => {
-    setToggle(!toggle)
-    
-    console.log(toggle);
-    }
+const handleUpdate =(e)=>{
+  e.preventDefault();
+  //console.log(selecteduser.id);
+  
+ let id = user.id
+ alert(id)
+  axios.put(`http://localhost:5000/user/update-user/${id}`,user)
+  .then((res)=>{
+    console.log(res.data);   
+    alert('Updated') 
+    getAllUser();
+    setUpdateFlag(false);
+    // clear input field
+    setUser({
+      staffname:"",fathername:"",address:"",mobilenumber:"",adhar:"",email:"",doj:"",username:"",password:""
+    })
+  })
+  .catch((err)=>{
+    console.log(err.message);
+  })
+}
+   
   return (
     <>
       <h2 className="mb-20"> Staff Registration Page </h2>
@@ -162,7 +181,13 @@ const [toggle, setToggle] = useState(false);
             <label className="label">Refference</label> 
             <input type="text" placeholder="Refference" id="refrence" name="refrence" onChange={handleInput} required/>                 
             <div className="row-flex">
-            <input className="btn" type="submit" onClick={PostUserData}/>
+            {/* //<input className="btn" type="submit" onClick={PostUserData}/> */}
+            {
+              updateFlag? (
+              <input className="btn" type="submit" value="Upadte" onClick={handleUpdate}  />
+          ):(
+              <input className="btn" type="submit" value="Submit" onClick={PostUserData} />)
+          }
             <input className="btn btn-red" type="reset"/>
           </div>
           </div>
@@ -190,7 +215,7 @@ const [toggle, setToggle] = useState(false);
               userdata && userdata.map((u,index)=>
               
               <tr key={index}>
-                <td>{index+1} <span onClick={()=>{toggleFunc()}}>view</span></td>
+                <td>{index+1} <span >view</span></td>
                 <td>{u.staffname}</td>
                 <td>{u.mobilenumber}</td>
                 {/* <td>{u.address}</td> */}

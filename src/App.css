@@ -407,3 +407,7 @@ tr:nth-child(even) {
   text-align: center;
   padding-bottom: 5px;
 }
+.heading{
+  text-align: center;
+  color: skyblue;
+}
